@@ -102,6 +102,8 @@ def parse_data(symbol):
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         DATA_PATH = sys.argv[1]
+    else:
+        DATA_PATH = datetime.now().strftime('%Y-%m-%d')
 
     # download_all(DATA_PATH)
     main()
