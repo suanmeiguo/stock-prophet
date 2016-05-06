@@ -5,9 +5,10 @@ import sys
 import subprocess
 import multiprocessing
 import time
+import csv
 
 
-SYMBOL_LIST_PATH = 'static/NYSE.txt'
+SYMBOL_LIST_DIR = 'static/'
 
 
 def wget(url, output_path):
@@ -23,20 +24,17 @@ def wget(url, output_path):
 def get_stock_list():
     """Read stock symbol into a list
     """
-    header = True
+    for (dirpath, dirnames, filenames) in os.walk(SYMBOL_LIST_DIR):
+        for filename in filenames:
 
-    stock_list = open(SYMBOL_LIST_PATH, 'r')
-    result = []
+            if filename.endswith('.csv'):
+                csvfile = open(os.path.join(dirpath, filename), 'rb')
+                reader = csv.DictReader(csvfile, delimiter=',', quotechar='"')
 
-    for line in stock_list:
-        if header:
-            header = False
-            continue
-        [symbol, company] = map(lambda x: x.strip(), line.split('\t'))
-        result.append((symbol, company))
+                for row in reader:
+                    yield row['Symbol'].strip(), row['Name'].strip()
 
-    stock_list.close()
-    return result
+                csvfile.close()
 
 
 class JoinableQueue:
