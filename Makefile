@@ -1,5 +1,7 @@
+DATE = `date +%F`
+
 download:
 	python download.py
 
 run:
-	python main.py
+	python main.py > $(DATE).csv
